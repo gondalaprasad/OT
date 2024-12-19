@@ -70,7 +70,10 @@ st.subheader("Strategy Execution")
 # Table container with custom margin-top
 with st.container():
     st.markdown("<div class='table-container'>", unsafe_allow_html=True)
-    st.dataframe(df.style.set_properties(**{'text-align': 'center'}).hide_index(), use_container_width=True)
+    
+    # Display the dataframe with formatting
+    st.dataframe(df, use_container_width=True)
+    
     st.markdown("</div>", unsafe_allow_html=True)
 
 # Add Execution Button (dynamic button per row)
