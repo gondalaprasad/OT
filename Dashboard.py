@@ -32,8 +32,8 @@ st.markdown("""
 # Title
 st.title("Options Terminal")
 
-# Create a row with 4 columns for indices (Nifty, Bank Nifty, Fin Nifty, Sensex)
-col1, col2, col3, col4 = st.columns(4)
+# Create a row with 5 columns for indices (Nifty, Bank Nifty, Fin Nifty, Sensex)
+col1, col2, col3, col4, col5 = st.columns(5)
 
 # Display real-time data for each index in respective columns
 with col1:
@@ -51,6 +51,21 @@ with col3:
 with col4:
     st.markdown("<h3 class='header'>Sensex</h3>", unsafe_allow_html=True)
     st.markdown(f"<div class='data-card'>LTP: {random.randint(58000, 60000)}<br>Change (Points): {random.randint(-500, 500)}<br>Change (%): {random.uniform(-2, 2):.2f}%<br>Prev Close: {random.randint(57500, 59500)}</div>", unsafe_allow_html=True)
+
+
+# Add Sensex data to each column with a button in each cell of col5
+for i, col in enumerate([col1, col2, col3, col4, col5]):
+    with col:
+        if i < 4:
+            # Displaying data for indices
+            st.markdown(f"<h3 class='header'>Index {i + 1}</h3>", unsafe_allow_html=True)
+            st.markdown(f"<div class='data-card'>LTP: {random.randint(58000, 60000)}<br>Change (Points): {random.randint(-500, 500)}<br>Change (%): {random.uniform(-2, 2):.2f}%<br>Prev Close: {random.randint(57500, 59500)}</div>", unsafe_allow_html=True)
+        else:
+            # Button in the last column
+            st.markdown("<h3 class='header'>Action</h3>", unsafe_allow_html=True)
+            if st.button(f"Execute {i + 1}"):
+                st.write(f"You clicked 'Execute {i + 1}' button!")
+
 
 # Dummy Data for the strategy table
 data = {
