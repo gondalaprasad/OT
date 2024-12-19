@@ -2,12 +2,13 @@ import streamlit as st
 import pandas as pd
 import random
 
-# Title for the web page
+# Set the page title
 st.title("Options Terminal")
 
-# First Row with 4 columns displaying real-time data for indices (dummy data)
+# Create a row with 4 columns for indices (Nifty, Bank Nifty, Fin Nifty, Sensex)
 col1, col2, col3, col4 = st.columns(4)
 
+# Display real-time data for each index in respective columns
 with col1:
     st.subheader("Nifty")
     st.write(f"LTP: {random.randint(17000, 18000)}")
@@ -36,7 +37,7 @@ with col4:
     st.write(f"Change (%): {random.uniform(-2, 2):.2f}%")
     st.write(f"Prev Close: {random.randint(57500, 59500)}")
 
-# Dummy Data for the strategies table
+# Dummy Data for the strategy table
 data = {
     "Instruments": ["NIFTY24D1925000CE", "NIFTY24DEC25000CE", "BANKNIFTY24D40000CE", "BANKNIFTY24D42000CE"],
     "Net LTP": [random.uniform(20, 50), random.uniform(30, 60), random.uniform(100, 150), random.uniform(200, 250)],
@@ -49,7 +50,7 @@ data = {
 # Create DataFrame for the table
 df = pd.DataFrame(data)
 
-# Display the table
+# Show the table with headers
 st.subheader("Strategy Execution")
 st.write("List of strategies and their execution details:")
 
@@ -62,8 +63,8 @@ def execution_button(row):
             return "Success"
     return row['Order Status']
 
-# Loop through each row and display the button
+# Apply execution button to each row
 df['Order Status'] = df.apply(execution_button, axis=1)
 
-# Show the table with updated statuses
+# Show the updated DataFrame with Order Status changes
 st.dataframe(df)
