@@ -53,6 +53,7 @@ with col4:
 
 # Dummy Data for the strategy table
 data = {
+    "Sl. No.": [1, 2, 3, 4],
     "Instruments": ["NIFTY24D1925000CE", "NIFTY24DEC25000CE", "BANKNIFTY24D40000CE", "BANKNIFTY24D42000CE"],
     "Net LTP": [random.uniform(20, 50), random.uniform(30, 60), random.uniform(100, 150), random.uniform(200, 250)],
     "Desired LTP": [random.uniform(25, 55), random.uniform(35, 65), random.uniform(110, 160), random.uniform(210, 260)],
@@ -64,24 +65,26 @@ data = {
 # Create DataFrame for the table
 df = pd.DataFrame(data)
 
-# Show the table with headers and styles
+# Add Execution Button Column
+df["Execution"] = [f"Execute {row}" for row in df["Instruments"]]
+
+# Show the table with headers and styling
 st.subheader("Strategy Execution")
 
 # Table container with custom margin-top
 with st.container():
     st.markdown("<div class='table-container'>", unsafe_allow_html=True)
     
-    # Display the dataframe with formatting
-    st.dataframe(df, use_container_width=True)
+    # Display the dataframe with the buttons in the last column
+    st.write(df)
+
+    # Add Execution Button for each row
+    for i in range(len(df)):
+        if df.at[i, 'Order Status'] == "Waiting":
+            if st.button(f"Execute {df.at[i, 'Instruments']}", key=f"exec_{i}"):
+                # Update order status (in actual, logic would go here)
+                df.at[i, 'Order Status'] = "Success"
+                st.success(f"Order for {df.at[i, 'Instruments']} executed!")
     
     st.markdown("</div>", unsafe_allow_html=True)
 
-# Add Execution Button (dynamic button per row)
-for i in range(len(df)):
-    if df.at[i, 'Order Status'] == "Waiting":
-        if st.button(f"Execute {df.at[i, 'Instruments']}", key=f"exec_{i}"):
-            # Update order status (in actual, logic would go here)
-            df.at[i, 'Order Status'] = "Success"
-            st.success(f"Order for {df.at[i, 'Instruments']} executed!")
-
-st.write(df)  # To show updated dataframe after order execution
