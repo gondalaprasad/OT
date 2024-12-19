@@ -13,20 +13,18 @@ st.markdown("""
             font-weight: bold;
         }
         .header {
-            color: #2e6b8a;
+            color: #ffffff;
             font-size: 25px;
         }
         .data-card {
-            background-color: #f4f4f4;
+            background-color: #000000;
+            color: #ffffff;
             padding: 10px;
             border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid white;
         }
         .table-container {
             margin-top: 30px;
-        }
-        .stButton>button {
-            width: 100%;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -68,9 +66,6 @@ data = {
 # Create DataFrame for the table
 df = pd.DataFrame(data)
 
-# Add Execution Button Column
-df["Execution"] = [f"Execute {row}" for row in df["Instruments"]]
-
 # Show the table with headers and styling
 st.subheader("Strategy Execution")
 
@@ -78,17 +73,8 @@ st.subheader("Strategy Execution")
 with st.container():
     st.markdown("<div class='table-container'>", unsafe_allow_html=True)
     
-    # Display the dataframe with the serial number column and execution buttons in the last column
+    # Display the dataframe with the serial number column
+    df = df.rename(columns={"Sl. No.": "Sl. No."})
     st.write(df)
 
-    # Add Execution Button for each row inside the table
-    for i in range(len(df)):
-        col = st.columns(len(df.columns))  # Create columns dynamically based on the number of columns in the table
-        with col[-1]:  # Add the button to the last column
-            if df.at[i, 'Order Status'] == "Waiting":
-                if st.button(f"Execute {df.at[i, 'Instruments']}", key=f"exec_{i}"):
-                    # Update order status (in actual, logic would go here)
-                    df.at[i, 'Order Status'] = "Success"
-                    st.success(f"Order for {df.at[i, 'Instruments']} executed!")
-    
     st.markdown("</div>", unsafe_allow_html=True)
