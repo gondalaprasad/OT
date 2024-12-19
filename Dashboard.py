@@ -3,6 +3,32 @@ import pandas as pd
 import random
 
 # Set the page title
+st.set_page_config(page_title="Options Terminal", layout="wide")
+
+# Custom CSS for styling
+st.markdown("""
+    <style>
+        .big-font {
+            font-size: 30px !important;
+            font-weight: bold;
+        }
+        .header {
+            color: #2e6b8a;
+            font-size: 25px;
+        }
+        .data-card {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .table-container {
+            margin-top: 30px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Title
 st.title("Options Terminal")
 
 # Create a row with 4 columns for indices (Nifty, Bank Nifty, Fin Nifty, Sensex)
@@ -10,32 +36,20 @@ col1, col2, col3, col4 = st.columns(4)
 
 # Display real-time data for each index in respective columns
 with col1:
-    st.subheader("Nifty")
-    st.write(f"LTP: {random.randint(17000, 18000)}")
-    st.write(f"Change (Points): {random.randint(-100, 100)}")
-    st.write(f"Change (%): {random.uniform(-2, 2):.2f}%")
-    st.write(f"Prev Close: {random.randint(16900, 17900)}")
+    st.markdown("<h3 class='header'>Nifty</h3>", unsafe_allow_html=True)
+    st.markdown(f"<div class='data-card'>LTP: {random.randint(17000, 18000)}<br>Change (Points): {random.randint(-100, 100)}<br>Change (%): {random.uniform(-2, 2):.2f}%<br>Prev Close: {random.randint(16900, 17900)}</div>", unsafe_allow_html=True)
 
 with col2:
-    st.subheader("Bank Nifty")
-    st.write(f"LTP: {random.randint(38000, 40000)}")
-    st.write(f"Change (Points): {random.randint(-200, 200)}")
-    st.write(f"Change (%): {random.uniform(-2, 2):.2f}%")
-    st.write(f"Prev Close: {random.randint(37500, 39500)}")
+    st.markdown("<h3 class='header'>Bank Nifty</h3>", unsafe_allow_html=True)
+    st.markdown(f"<div class='data-card'>LTP: {random.randint(38000, 40000)}<br>Change (Points): {random.randint(-200, 200)}<br>Change (%): {random.uniform(-2, 2):.2f}%<br>Prev Close: {random.randint(37500, 39500)}</div>", unsafe_allow_html=True)
 
 with col3:
-    st.subheader("Fin Nifty")
-    st.write(f"LTP: {random.randint(17000, 18000)}")
-    st.write(f"Change (Points): {random.randint(-100, 100)}")
-    st.write(f"Change (%): {random.uniform(-2, 2):.2f}%")
-    st.write(f"Prev Close: {random.randint(16900, 17900)}")
+    st.markdown("<h3 class='header'>Fin Nifty</h3>", unsafe_allow_html=True)
+    st.markdown(f"<div class='data-card'>LTP: {random.randint(17000, 18000)}<br>Change (Points): {random.randint(-100, 100)}<br>Change (%): {random.uniform(-2, 2):.2f}%<br>Prev Close: {random.randint(16900, 17900)}</div>", unsafe_allow_html=True)
 
 with col4:
-    st.subheader("Sensex")
-    st.write(f"LTP: {random.randint(58000, 60000)}")
-    st.write(f"Change (Points): {random.randint(-500, 500)}")
-    st.write(f"Change (%): {random.uniform(-2, 2):.2f}%")
-    st.write(f"Prev Close: {random.randint(57500, 59500)}")
+    st.markdown("<h3 class='header'>Sensex</h3>", unsafe_allow_html=True)
+    st.markdown(f"<div class='data-card'>LTP: {random.randint(58000, 60000)}<br>Change (Points): {random.randint(-500, 500)}<br>Change (%): {random.uniform(-2, 2):.2f}%<br>Prev Close: {random.randint(57500, 59500)}</div>", unsafe_allow_html=True)
 
 # Dummy Data for the strategy table
 data = {
@@ -50,21 +64,21 @@ data = {
 # Create DataFrame for the table
 df = pd.DataFrame(data)
 
-# Show the table with headers
+# Show the table with headers and styles
 st.subheader("Strategy Execution")
-st.write("List of strategies and their execution details:")
 
-# Add the "Execution" button for each row in the table
-def execution_button(row):
-    if row['Order Status'] == "Waiting":
-        if st.button(f"Execute {row['Instruments']}"):
-            # Logic to execute the order would go here (for now, it just changes the status)
-            st.success(f"Order for {row['Instruments']} executed!")
-            return "Success"
-    return row['Order Status']
+# Table container with custom margin-top
+with st.container():
+    st.markdown("<div class='table-container'>", unsafe_allow_html=True)
+    st.dataframe(df.style.set_properties(**{'text-align': 'center'}).hide_index(), use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# Apply execution button to each row
-df['Order Status'] = df.apply(execution_button, axis=1)
+# Add Execution Button (dynamic button per row)
+for i in range(len(df)):
+    if df.at[i, 'Order Status'] == "Waiting":
+        if st.button(f"Execute {df.at[i, 'Instruments']}", key=f"exec_{i}"):
+            # Update order status (in actual, logic would go here)
+            df.at[i, 'Order Status'] = "Success"
+            st.success(f"Order for {df.at[i, 'Instruments']} executed!")
 
-# Show the updated DataFrame with Order Status changes
-st.dataframe(df)
+st.write(df)  # To show updated dataframe after order execution
