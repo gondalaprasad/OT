@@ -25,6 +25,9 @@ st.markdown("""
         .table-container {
             margin-top: 30px;
         }
+        .stButton>button {
+            width: 100%;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -75,16 +78,17 @@ st.subheader("Strategy Execution")
 with st.container():
     st.markdown("<div class='table-container'>", unsafe_allow_html=True)
     
-    # Display the dataframe with the buttons in the last column
+    # Display the dataframe with the serial number column and execution buttons in the last column
     st.write(df)
 
-    # Add Execution Button for each row
+    # Add Execution Button for each row inside the table
     for i in range(len(df)):
-        if df.at[i, 'Order Status'] == "Waiting":
-            if st.button(f"Execute {df.at[i, 'Instruments']}", key=f"exec_{i}"):
-                # Update order status (in actual, logic would go here)
-                df.at[i, 'Order Status'] = "Success"
-                st.success(f"Order for {df.at[i, 'Instruments']} executed!")
+        col = st.columns(len(df.columns))  # Create columns dynamically based on the number of columns in the table
+        with col[-1]:  # Add the button to the last column
+            if df.at[i, 'Order Status'] == "Waiting":
+                if st.button(f"Execute {df.at[i, 'Instruments']}", key=f"exec_{i}"):
+                    # Update order status (in actual, logic would go here)
+                    df.at[i, 'Order Status'] = "Success"
+                    st.success(f"Order for {df.at[i, 'Instruments']} executed!")
     
     st.markdown("</div>", unsafe_allow_html=True)
-
